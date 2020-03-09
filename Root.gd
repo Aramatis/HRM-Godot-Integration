@@ -13,24 +13,32 @@ var conn_pos : Position2D
 var scan_pos : Position2D
 var devices : Array
 var start_menu : Control
+var server_pid : int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	message = $Screen/Message
+	# Start HRM server
+	server_pid = OS.execute(".\\assets\\HRM.exe", [], false)
+	print(server_pid)
 	conn_status = $Screen/ConnStatus
 	conn_init_text = conn_status.get_text()
+	conn_status.set_text(conn_init_text + "Waiting for server.")
 	hrm_manager = $HrmManager
+	start_menu = $Screen/StartMenu
 	indicator = $Screen/StartMenu/Indicator
+	conn_pos = $Screen/Positions/ConnectPos
+	scan_pos = $Screen/Positions/ScanPos
+	indicator.position = conn_pos.position
+	message = $Screen/Message
+	hrm_manager.set_output_label($Screen/Message)
 	device_list = $Screen/StartMenu/ItemList
 	devices = Array()
 	scan_button = $Screen/StartMenu/ScanButton
-	select_button = $Screen/StartMenu/SelectButton	
-	hrm_manager.set_output_label($Screen/Message)
-	conn_pos = $Screen/Positions/ConnectPos
-	scan_pos = $Screen/Positions/ScanPos
-	start_menu = $Screen/StartMenu
-	indicator.position = conn_pos.position
-	conn_status.set_text(conn_init_text + "Waiting for server.")
+	select_button = $Screen/StartMenu/SelectButton
+	$ServerStartUpTimer.start(5)
+
+# Delays the beginning of the program to allow the HRM Server to start
+func _on_server_startup_timeout(): 
 	hrm_manager.start_connection()
 
 # Enables the scan button and enables the selection display

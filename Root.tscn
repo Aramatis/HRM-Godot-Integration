@@ -124,8 +124,12 @@ valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="ServerStartUpTimer" type="Timer" parent="."]
+one_shot = true
 [connection signal="hrm_connected" from="HrmManager" to="." method="_on_client_ready"]
 [connection signal="message_ready" from="HrmManager" to="." method="_on_message_ready"]
 [connection signal="scan_end" from="HrmManager" to="." method="_on_scan_end"]
 [connection signal="pressed" from="Screen/StartMenu/ScanButton" to="." method="_start_scan"]
 [connection signal="pressed" from="Screen/StartMenu/SelectButton" to="." method="_select_device"]
+[connection signal="timeout" from="ServerStartUpTimer" to="." method="_on_server_startup_timeout"]
