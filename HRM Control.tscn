@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://HRM Manager.gd" type="Script" id=1]
+[ext_resource path="res://HRM Client.gd" type="Script" id=2]
+[ext_resource path="res://HRM Server.gd" type="Script" id=3]
+
+[node name="HrmManager" type="Node"]
+script = ExtResource( 1 )
+
+[node name="HrmClient" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="HrmServer" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="ScanTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="AuthTimer" type="Timer" parent="."]
+one_shot = true
+[connection signal="hr_read" from="HrmClient" to="." method="_on_hr_read"]
+[connection signal="word_read" from="HrmClient" to="." method="_on_read_message"]
+[connection signal="incoming_on" from="HrmServer" to="." method="_on_incoming_on"]
+[connection signal="mb3_conn_requested" from="HrmServer" to="." method="_on_mb3_conn_requested"]
+[connection signal="timeout" from="ScanTimer" to="." method="_on_scan_end"]
+[connection signal="timeout" from="AuthTimer" to="." method="_on_auth_timer_end"]
