@@ -2,11 +2,12 @@ extends Node
 
 signal hrm_connected
 signal scan_end
+signal auth_end
 signal message_ready(word)
 signal hr_ready(hr)
+signal new_hr(hr)
 
 # VARIABLES
-var label : Label
 export var host := "127.0.0.1"
 export var in_port := 1242
 export var out_port := 1243
@@ -64,17 +65,6 @@ func _clean_threads() -> void:
 func _on_read_message(word):
 	emit_signal("message_ready", word)
 
-# Sets a label as output for readings
-func set_output_label(output : Label) -> void:
-	label = output
-
-# Update label text
-func update_label(message : String, extend := false) -> void:
-	if extend:
-		label.text += message
-	else:
-		label.text = message
-
 # Starts scanning for new MiBand 3 peripherals
 func start_ble_scan() -> void:
 	client.set_mode(1)
@@ -105,7 +95,7 @@ func _on_scan_end():
 
 # Handle hr data
 func _on_hr_read(hr):
-	update_label("Heart Rate: " + str(hr) + "\n", true)
+	emit_signal("new_hr", hr)
 
 # Handle mb3_conn_requested signal
 func _on_mb3_conn_requested():
@@ -114,3 +104,4 @@ func _on_mb3_conn_requested():
 # Handle AuthTimer timeout
 func _on_auth_timer_end():
 	start_hrm()
+	emit_signal("auth_end")

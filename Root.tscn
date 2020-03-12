@@ -1,11 +1,27 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://HRM Control.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Indicator.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Root.gd" type="Script" id=3]
+[ext_resource path="res://HrmGraph.tscn" type="PackedScene" id=4]
+[ext_resource path="res://art/Indicator/1.png" type="Texture" id=5]
+[ext_resource path="res://art/Indicator/4.png" type="Texture" id=6]
+[ext_resource path="res://art/Indicator/2.png" type="Texture" id=7]
+[ext_resource path="res://art/Indicator/6.png" type="Texture" id=8]
+[ext_resource path="res://art/Indicator/3.png" type="Texture" id=9]
+[ext_resource path="res://art/Indicator/8.png" type="Texture" id=10]
+[ext_resource path="res://art/Indicator/7.png" type="Texture" id=11]
+[ext_resource path="res://art/Indicator/5.png" type="Texture" id=12]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.960784, 0.960784, 0.960784, 1 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 5 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 6 ), ExtResource( 12 ), ExtResource( 8 ), ExtResource( 11 ), ExtResource( 10 ) ],
+"loop": true,
+"name": "default",
+"speed": 3.0
+} ]
 
 [node name="Root" type="Node2D"]
 script = ExtResource( 3 )
@@ -75,8 +91,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Indicator" parent="Screen/StartMenu" instance=ExtResource( 2 )]
-
 [node name="SelectButton" type="Button" parent="Screen/StartMenu"]
 visible = false
 anchor_left = 0.5
@@ -90,6 +104,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Indicator" type="Node2D" parent="Screen/StartMenu"]
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="Screen/StartMenu/Indicator"]
+frames = SubResource( 2 )
+frame = 1
+playing = true
+
+[node name="HrmGraph" parent="Screen" instance=ExtResource( 4 )]
+visible = false
+
 [node name="Positions" type="Node2D" parent="Screen"]
 
 [node name="ScanPos" type="Position2D" parent="Screen/Positions"]
@@ -97,20 +121,6 @@ position = Vector2( 360, 180 )
 
 [node name="ConnectPos" type="Position2D" parent="Screen/Positions"]
 position = Vector2( 30, 30 )
-
-[node name="Message" type="Label" parent="Screen"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-align = 1
-valign = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ConnStatus" type="Label" parent="Screen"]
 anchor_left = 0.08
@@ -127,8 +137,10 @@ __meta__ = {
 
 [node name="ServerStartUpTimer" type="Timer" parent="."]
 one_shot = true
+[connection signal="auth_end" from="HrmManager" to="." method="_on_auth_end"]
 [connection signal="hrm_connected" from="HrmManager" to="." method="_on_client_ready"]
 [connection signal="message_ready" from="HrmManager" to="." method="_on_message_ready"]
+[connection signal="new_hr" from="HrmManager" to="." method="_on_new_hr"]
 [connection signal="scan_end" from="HrmManager" to="." method="_on_scan_end"]
 [connection signal="pressed" from="Screen/StartMenu/ScanButton" to="." method="_start_scan"]
 [connection signal="pressed" from="Screen/StartMenu/SelectButton" to="." method="_select_device"]

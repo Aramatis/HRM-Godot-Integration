@@ -1,0 +1,82 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://HrmGraph.gd" type="Script" id=2]
+[ext_resource path="res://Indicator.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Axis.tscn" type="PackedScene" id=5]
+
+[node name="HrmGraph" type="Control"]
+margin_right = 600.0
+margin_bottom = 600.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MeanHR" type="Label" parent="."]
+anchor_left = 0.25
+anchor_top = 0.9
+anchor_right = 0.25
+anchor_bottom = 0.9
+margin_top = -7.0
+margin_bottom = 7.0
+grow_horizontal = 2
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleHR" type="Label" parent="MeanHR"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_top = -14.0
+margin_bottom = -9.53674e-07
+grow_horizontal = 2
+grow_vertical = 0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Mean Heart Rate:"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="MeanValence" type="Label" parent="."]
+anchor_left = 0.75
+anchor_top = 0.9
+anchor_right = 0.75
+anchor_bottom = 0.9
+margin_left = 3.05176e-05
+margin_top = -7.0
+margin_right = 3.05176e-05
+margin_bottom = 7.0
+grow_horizontal = 2
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+align = 1
+valign = 1
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="TitleVal" type="Label" parent="MeanValence"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_top = -14.0
+grow_horizontal = 2
+grow_vertical = 0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Mean Valence:"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="xAxis" parent="." instance=ExtResource( 5 )]
+
+[node name="yAxis" parent="." instance=ExtResource( 5 )]
+
+[node name="HRIndicator" parent="." instance=ExtResource( 4 )]

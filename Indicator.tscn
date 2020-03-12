@@ -1,25 +1,35 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://art/Indicator/3.png" type="Texture" id=1]
-[ext_resource path="res://art/Indicator/1.png" type="Texture" id=2]
-[ext_resource path="res://art/Indicator/2.png" type="Texture" id=3]
-[ext_resource path="res://art/Indicator/4.png" type="Texture" id=4]
-[ext_resource path="res://art/Indicator/6.png" type="Texture" id=5]
-[ext_resource path="res://art/Indicator/8.png" type="Texture" id=6]
-[ext_resource path="res://art/Indicator/5.png" type="Texture" id=7]
-[ext_resource path="res://art/Indicator/7.png" type="Texture" id=8]
+[ext_resource path="res://art/Player/3.png" type="Texture" id=1]
+[ext_resource path="res://art/Player/4.png" type="Texture" id=2]
+[ext_resource path="res://art/Player/2.png" type="Texture" id=3]
+[ext_resource path="res://art/Player/1.png" type="Texture" id=4]
+[ext_resource path="res://Indicator.gd" type="Script" id=5]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 1 ), ExtResource( 4 ), ExtResource( 7 ), ExtResource( 5 ), ExtResource( 8 ), ExtResource( 6 ) ],
+"frames": [ ExtResource( 4 ), ExtResource( 3 ), ExtResource( 1 ), ExtResource( 2 ) ],
 "loop": true,
 "name": "default",
-"speed": 3.0
+"speed": 2.0
 } ]
 
 [node name="Indicator" type="Node2D"]
+script = ExtResource( 5 )
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+[node name="TickerSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )
-frame = 7
 playing = true
+
+[node name="CabTween" type="Tween" parent="."]
+
+[node name="PosLabel" type="Label" parent="."]
+margin_left = 10.0
+margin_top = -7.0
+margin_right = 40.0
+margin_bottom = 7.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
