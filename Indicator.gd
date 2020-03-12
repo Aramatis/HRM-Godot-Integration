@@ -15,7 +15,7 @@ func _ready():
 	trans_type = cab.TRANS_CUBIC
 	ease_type = cab.EASE_IN_OUT
 	dest_queue = []
-	trans_time = 5
+	trans_time = 0.8
 	pos_label = $PosLabel
 	cab.connect("tween_completed", self, "_on_tween_completed")
 
@@ -45,7 +45,6 @@ func _move_smooth(axis : int, dest : float, text : String):
 # Sets the moving value to false again
 func _on_tween_completed(_object, _node_path):
 	moving = false
-	print("tween completed")
 	if not dest_queue.empty():
 		var dest_dict = dest_queue.pop_front()
 		var axis = dest_dict
