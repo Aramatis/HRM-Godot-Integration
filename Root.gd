@@ -13,6 +13,7 @@ var conn_pos : Position2D
 var scan_pos : Position2D
 var devices : Array
 var start_menu : Control
+var hrm_graph : Control
 var server_pid : int
 
 # Called when the node enters the scene tree for the first time.
@@ -25,6 +26,7 @@ func _ready():
 	conn_status.set_text(conn_init_text + "Waiting for server.")
 	hrm_manager = $HrmManager
 	start_menu = $Screen/StartMenu
+	hrm_graph = $Screen/HrmGraph
 	indicator = $Screen/StartMenu/Indicator
 	conn_pos = $Screen/Positions/ConnectPos
 	scan_pos = $Screen/Positions/ScanPos
@@ -79,6 +81,7 @@ func _on_message_ready(word):
 func _select_device():
 	if device_list.is_anything_selected():
 		start_menu.hide()
+		hrm_graph.show()
 		var selected := device_list.get_selected_items()[0]
 		print("Device selected: " + devices[selected])
 		hrm_manager.connect_miband3(devices[selected])

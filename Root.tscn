@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://HRM Control.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Indicator.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Root.gd" type="Script" id=3]
+[ext_resource path="res://HrmGraph.tscn" type="PackedScene" id=4]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.960784, 0.960784, 0.960784, 1 )
@@ -28,6 +29,7 @@ __meta__ = {
 }
 
 [node name="StartMenu" type="Control" parent="Screen"]
+visible = false
 margin_right = 600.0
 margin_bottom = 600.0
 __meta__ = {
@@ -89,6 +91,9 @@ text = "Select Device"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="HrmGraph" parent="Screen" instance=ExtResource( 4 )]
+visible = false
 
 [node name="Positions" type="Node2D" parent="Screen"]
 
