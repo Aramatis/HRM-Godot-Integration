@@ -1,6 +1,6 @@
 extends Node
 
-signal hrm_connected
+signal connected_to_server
 signal scan_end
 signal auth_end
 signal message_ready(word)
@@ -18,9 +18,21 @@ var server : Node
 func _ready():
 	client = $HrmClient
 	server = $HrmServer
+	# Register client signals
 	client.connect("client_started", self, "_on_client_started")
-	client.connect("input_connected", self, "_clean_threads")
-	server.connect("output_connected", self, "_on_output_connected")
+	client.connect("hr_read", self, "_on_hr_read")
+	client.connect("input_connected", self, "_on_input_connected")
+	client.connect("word_read", self, "_on_word_read")
+	# Register server signals
+	server.connect("hrm_status", self, "_on_hrm_status")
+	server.connect("incoming", self, "_on_incoming")
+	server.connect("invalid_id", self, "_on_invalid_id")
+	server.connect("mb3_conn", self, "_on_mb3_conn")
+	server.connect("message_sent", self, "_on_message_sent")
+	server.connect("output_status", self, "_on_output_status")
+	server.connect("scan", self, "_on_scan")
+	server.connect("vibrate_ms", self, "_on_vibrate_ms")
+	server.connect("vibrate_std", self, "_on_vibrate_std")
 
 # Starts the manager and assures incoming and outgoing connection
 func start_connection() -> void:
@@ -29,10 +41,6 @@ func start_connection() -> void:
 # Starts a TCP client to receive data from the HRM server 
 func start_client() -> void:
 	client.start_client(host, in_port)
-
-# Manages the client_started signal from the client
-func _on_client_started():
-	_get_connection()
 
 # Starts a thread for waiting for connections
 func _get_connection() -> void:
@@ -43,33 +51,15 @@ func _get_connection() -> void:
 func start_server()-> void:
 	server.start_server(host, out_port)
 
-# Manages the output_connected signal from the server
-func _on_output_connected():
-	start_incoming_server()
-
-# Starts the HRM server to get input data
-func start_incoming_server() -> void:
+# Starts the HRM client to get input data
+func _start_incoming_client() -> void:
 	server.message_client(0, true)
 
-# Handles the incoming_on signal
-func _on_incoming_on():
-	pass
-
-# Manages the input_connected signal and buries the thread 
-# for waiting for connections
-func _clean_threads() -> void:
-	print("Connected to HRM server in port " + str(in_port))
-	emit_signal("hrm_connected")
-
-# Saves read devices
-func _on_read_message(word):
-	emit_signal("message_ready", word)
-
 # Starts scanning for new MiBand 3 peripherals
-func start_ble_scan() -> void:
+func start_ble_scan(secs) -> void:
 	client.set_mode(1)
-	server.message_client(1)
-	$ScanTimer.start(20)
+	server.message_client(1, secs)
+	$ScanTimer.start(secs)
 
 # Connects the HRM server to the MiBand 3 with the given address
 func connect_miband3(address : String) -> void:
@@ -88,20 +78,79 @@ func start_hrm() -> void:
 func vibrate_ms(ms : int) -> void:
 	server.message_client(5, ms)
 
+# Makes the connected MiBand 3 vibrate for the default amount of milliseconds
+func vibrate_default() -> void:
+	server.message_client(6)
+
 # Signals the end of a scan
 func _on_scan_end():
 	client.set_mode(0)
 	emit_signal("scan_end")
 
-# Handle hr data
-func _on_hr_read(hr):
-	emit_signal("new_hr", hr)
-
-# Handle mb3_conn_requested signal
-func _on_mb3_conn_requested():
-	$AuthTimer.start(10)
-
 # Handle AuthTimer timeout
 func _on_auth_timer_end():
 	start_hrm()
 	emit_signal("auth_end")
+
+#### CLIENT SIGNALS MANAGEMENT ####
+
+# # Handles the client_started signal
+func _on_client_started():
+	_get_connection()
+
+# Handles the hr_read signal
+func _on_hr_read(hr):
+	emit_signal("new_hr", hr)
+
+# Handles the input_connected signal 
+func _on_input_connected() -> void:
+	print("Connected to HRM server in port " + str(in_port))
+	emit_signal("connected_to_server")
+
+# Saves read devices
+func _on_word_read(word):
+	emit_signal("message_ready", word)
+
+
+#### SERVER SIGNALS MANAGEMENT ####
+
+# Handles the hrm_status signal
+func _on_hrm_status(stat):
+	if stat:
+		pass
+
+# Handles the incoming signal
+func _on_incoming(stat):
+	if stat:
+		pass
+
+# Handles the incoming signal
+func _on_invalid_id():
+	pass
+
+# Handles the mb3_conn signal
+func _on_mb3_conn(_addr):
+	$AuthTimer.start(10)
+
+# Handles the message_sent signal
+func _on_message_sent():
+	pass
+
+# Handles the output_status signal
+func _on_output_status(stat) -> void:
+	if stat:
+		_start_incoming_client()
+	else:
+		print("Server disconnected")
+
+# Handles the scan signal
+func _on_scan():
+	pass
+
+# Handles the vibrate_ms signal
+func _on_vibrate_ms(_ms):
+	pass
+
+# Handles the vibrate_std signal
+func _on_vibrate_std():
+	pass

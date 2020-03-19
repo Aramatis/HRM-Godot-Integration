@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://HRM Control.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ScanGUI.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Root.gd" type="Script" id=3]
 [ext_resource path="res://HrmGraph.tscn" type="PackedScene" id=4]
 [ext_resource path="res://art/Indicator/1.png" type="Texture" id=5]
@@ -44,25 +45,9 @@ __meta__ = {
 }
 
 [node name="StartMenu" type="Control" parent="Screen"]
+margin_top = 3.05176e-05
 margin_right = 600.0
 margin_bottom = 600.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ScanButton" type="Button" parent="Screen/StartMenu"]
-anchor_left = 0.5
-anchor_top = 0.3
-anchor_right = 0.5
-anchor_bottom = 0.3
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_stretch_ratio = 0.0
-disabled = true
-shortcut_in_tooltip = false
-action_mode = 0
-button_mask = 3
-text = "Start scan"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -108,8 +93,10 @@ __meta__ = {
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Screen/StartMenu/Indicator"]
 frames = SubResource( 2 )
-frame = 1
+frame = 2
 playing = true
+
+[node name="ScanGUI" parent="Screen/StartMenu" instance=ExtResource( 2 )]
 
 [node name="HrmGraph" parent="Screen" instance=ExtResource( 4 )]
 visible = false
@@ -117,7 +104,7 @@ visible = false
 [node name="Positions" type="Node2D" parent="Screen"]
 
 [node name="ScanPos" type="Position2D" parent="Screen/Positions"]
-position = Vector2( 360, 180 )
+position = Vector2( 394, 185 )
 
 [node name="ConnectPos" type="Position2D" parent="Screen/Positions"]
 position = Vector2( 30, 30 )
@@ -138,10 +125,10 @@ __meta__ = {
 [node name="ServerStartUpTimer" type="Timer" parent="."]
 one_shot = true
 [connection signal="auth_end" from="HrmManager" to="." method="_on_auth_end"]
-[connection signal="hrm_connected" from="HrmManager" to="." method="_on_client_ready"]
+[connection signal="connected_to_server" from="HrmManager" to="." method="_on_client_ready"]
 [connection signal="message_ready" from="HrmManager" to="." method="_on_message_ready"]
 [connection signal="new_hr" from="HrmManager" to="." method="_on_new_hr"]
 [connection signal="scan_end" from="HrmManager" to="." method="_on_scan_end"]
-[connection signal="pressed" from="Screen/StartMenu/ScanButton" to="." method="_start_scan"]
 [connection signal="pressed" from="Screen/StartMenu/SelectButton" to="." method="_select_device"]
+[connection signal="scan_start" from="Screen/StartMenu/ScanGUI" to="." method="_start_scan"]
 [connection signal="timeout" from="ServerStartUpTimer" to="." method="_on_server_startup_timeout"]
