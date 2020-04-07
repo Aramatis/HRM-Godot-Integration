@@ -102,8 +102,11 @@ func _select_device():
 		valence_enabled = true
 
 # Handles the ending of authentication
-func _on_auth_end():
-	conn_status.set_text(conn_init_text + "\nWaiting to receive HR.")
+func _on_auth_end(status):
+	if status:
+		conn_status.set_text(conn_init_text + "\nWaiting to receive HR.")
+	else:
+		conn_status.set_text(conn_init_text + "\nAuthentication Failed.")
 
 func _input(event):
 	if valence_enabled:

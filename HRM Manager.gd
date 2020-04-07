@@ -2,7 +2,7 @@ extends Node
 
 signal connected_to_server
 signal scan_end
-signal auth_end
+signal auth_end(status)
 signal message_ready(word)
 signal hr_ready(hr)
 signal new_hr(hr)
@@ -23,6 +23,8 @@ func _ready():
 	client.connect("hr_read", self, "_on_hr_read")
 	client.connect("input_connected", self, "_on_input_connected")
 	client.connect("word_read", self, "_on_word_read")
+	client.connect("auth_ok", self, "_on_auth_ok")
+	client.connect("auth_error", self, "_on_auth_error")
 	# Register server signals
 	server.connect("hrm_status", self, "_on_hrm_status")
 	server.connect("incoming", self, "_on_incoming")
@@ -72,7 +74,6 @@ func message_miband3(message : String) -> void:
 # Starts the HRM monitoring
 func start_hrm() -> void:
 	server.message_client(4, true)
-	client.set_mode(2)
 
 # Makes the connected MiBand 3 vibrate for the given amount of milliseconds
 func vibrate_ms(ms : int) -> void:
@@ -86,11 +87,6 @@ func vibrate_default() -> void:
 func _on_scan_end():
 	client.set_mode(0)
 	emit_signal("scan_end")
-
-# Handle AuthTimer timeout
-func _on_auth_timer_end():
-	start_hrm()
-	emit_signal("auth_end")
 
 #### CLIENT SIGNALS MANAGEMENT ####
 
@@ -111,13 +107,25 @@ func _on_input_connected() -> void:
 func _on_word_read(word):
 	emit_signal("message_ready", word)
 
+# Handles the auth_ok signal
+func _on_auth_ok():
+	start_hrm()
+	emit_signal("auth_end", true)
+
+# Handles the auth_error signal
+func _on_auth_error():
+	print('Authentication Error')
+	emit_signal("auth_end", false)
 
 #### SERVER SIGNALS MANAGEMENT ####
 
 # Handles the hrm_status signal
 func _on_hrm_status(stat):
 	if stat:
-		pass
+		client.set_mode(3)
+	else:
+		client.set_mode(0)
+		print("HRM turned off")
 
 # Handles the incoming signal
 func _on_incoming(stat):
@@ -130,7 +138,7 @@ func _on_invalid_id():
 
 # Handles the mb3_conn signal
 func _on_mb3_conn(_addr):
-	$AuthTimer.start(10)
+	client.set_mode(2)
 
 # Handles the message_sent signal
 func _on_message_sent():

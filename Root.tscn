@@ -93,7 +93,6 @@ __meta__ = {
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Screen/StartMenu/Indicator"]
 frames = SubResource( 2 )
-frame = 2
 playing = true
 
 [node name="ScanGUI" parent="Screen/StartMenu" instance=ExtResource( 2 )]

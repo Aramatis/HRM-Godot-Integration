@@ -15,8 +15,4 @@ script = ExtResource( 3 )
 
 [node name="ScanTimer" type="Timer" parent="."]
 one_shot = true
-
-[node name="AuthTimer" type="Timer" parent="."]
-one_shot = true
 [connection signal="timeout" from="ScanTimer" to="." method="_on_scan_end"]
-[connection signal="timeout" from="AuthTimer" to="." method="_on_auth_timer_end"]
