@@ -125,7 +125,7 @@ __meta__ = {
 one_shot = true
 [connection signal="auth_end" from="HrmManager" to="." method="_on_auth_end"]
 [connection signal="connected_to_server" from="HrmManager" to="." method="_on_client_ready"]
-[connection signal="message_ready" from="HrmManager" to="." method="_on_message_ready"]
+[connection signal="message_received" from="HrmManager" to="." method="_on_message_received"]
 [connection signal="new_hr" from="HrmManager" to="." method="_on_new_hr"]
 [connection signal="scan_end" from="HrmManager" to="." method="_on_scan_end"]
 [connection signal="pressed" from="Screen/StartMenu/SelectButton" to="." method="_select_device"]

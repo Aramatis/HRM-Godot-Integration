@@ -73,7 +73,7 @@ func _on_scan_end():
 	indicator.set_visible(false)
 
 # Handles a new device scanned
-func _on_message_ready(word):
+func _on_message_received(word):
 	var device = word
 	if not devices.has(word):
 		devices.append(device)

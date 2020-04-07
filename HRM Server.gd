@@ -3,11 +3,11 @@ extends Node
 # SIGNALS
 signal hrm_status(stat)
 signal incoming(stat)
-signal invalid_id
+signal invalid_id(inv_id)
 signal mb3_conn(addr)
-signal message_sent
+signal message_sent(msg)
 signal output_status(stat)
-signal scan
+signal scan(secs)
 signal vibrate_ms(ms)
 signal vibrate_std
 
@@ -44,7 +44,7 @@ func message_client(id : int, payload = true) -> void:
 		# 1 is turning the scanner on for the given seconds
 		1:
 			godot_out.put_16(payload)
-			emit_signal("scan")
+			emit_signal("scan", payload)
 		# 2 is for connecting to a MiBand3 address
 		2:
 			godot_out.put_utf8_string(payload)
@@ -52,7 +52,7 @@ func message_client(id : int, payload = true) -> void:
 		# 3 is for writing a message to the connected MiBand 3
 		3:
 			godot_out.put_utf8_string(payload)
-			emit_signal("message_sent")
+			emit_signal("message_sent", payload)
 		# 4 is for turning the Heart Rate Monitoring on or off
 		4:
 			print("Requesting HRM status change")
@@ -67,4 +67,4 @@ func message_client(id : int, payload = true) -> void:
 			emit_signal("vibrate_std")
 		_:
 			print("Invalid ID for messaging server")
-			emit_signal("invalid_id")
+			emit_signal("invalid_id", id)
