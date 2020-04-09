@@ -20,7 +20,7 @@ var valence_enabled : bool
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# Start HRM server
-	# server_pid = OS.execute(".\\assets\\HRM.exe", [], false)
+	server_pid = OS.execute(".\\assets\\HRM.exe", [], false)
 	conn_status = $Screen/ConnStatus
 	conn_init_text = conn_status.get_text()
 	conn_status.set_text(conn_init_text + "Waiting for server.")
