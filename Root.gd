@@ -108,6 +108,14 @@ func _on_auth_end(status):
 	else:
 		conn_status.set_text(conn_init_text + "\nAuthentication Failed.")
 
+# Manages the vibrate_by signal
+func _on_vibrate_by(secs) -> void:
+	hrm_manager.vibrate_ms(secs * 1000)
+
+# Manages the send_msg signal
+func _on_send_msg(msg) -> void:
+	hrm_manager.message_miband3(msg)
+
 func _input(event):
 	if valence_enabled:
 		if event.is_action_pressed("ui_left"):

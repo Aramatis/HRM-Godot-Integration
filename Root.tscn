@@ -49,6 +49,7 @@ margin_top = 3.05176e-05
 margin_right = 600.0
 margin_bottom = 600.0
 __meta__ = {
+"_edit_group_": true,
 "_edit_use_anchors_": false
 }
 
@@ -93,6 +94,7 @@ __meta__ = {
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="Screen/StartMenu/Indicator"]
 frames = SubResource( 2 )
+frame = 4
 playing = true
 
 [node name="ScanGUI" parent="Screen/StartMenu" instance=ExtResource( 2 )]
@@ -130,4 +132,6 @@ one_shot = true
 [connection signal="scan_end" from="HrmManager" to="." method="_on_scan_end"]
 [connection signal="pressed" from="Screen/StartMenu/SelectButton" to="." method="_select_device"]
 [connection signal="scan_start" from="Screen/StartMenu/ScanGUI" to="." method="_start_scan"]
+[connection signal="send_msg" from="Screen/HrmGraph" to="." method="_on_send_msg"]
+[connection signal="vibrate_by" from="Screen/HrmGraph" to="." method="_on_vibrate_by"]
 [connection signal="timeout" from="ServerStartUpTimer" to="." method="_on_server_startup_timeout"]

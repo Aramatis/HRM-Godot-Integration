@@ -14,6 +14,12 @@ var current_valence : int
 var x_scale : Vector2
 var y_scale : Vector2
 var indicator
+var PopupMsg : PopupDialog
+var PopupVbr : PopupDialog
+
+# Signals
+signal vibrate_by(secs)
+signal send_msg(msg)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -29,6 +35,8 @@ func _ready():
 	indicator.position = Vector2(300, 300)
 	hr_label = $MeanHR
 	val_label = $MeanValence
+	PopupMsg = $PopupMessage
+	PopupVbr = $PopupVibrate
 	y_axis.connect("name_resized", self, "_on_y_axis_name_change_size")
 	x_axis.set_labels("Valence", x_scale[0], x_scale[1])
 	y_axis.set_labels("Heart Rate (bpm) ", y_scale[0], y_scale[1])
@@ -95,3 +103,28 @@ func _transform_by_scale(dimention : int, scale : Vector2, pos : int) -> float:
 	var scale_size = real_scale[1] - real_scale[0]
 	result *= (graph_scale.length() / scale_size)
 	return result
+
+# Handles the pressing of the vibrate icon
+func _on_vibrate_icon_press():
+	PopupVbr.popup()
+
+# Handles the pressing of the message icon
+func _on_message_icon_press():
+	PopupMsg.popup()
+
+# Handles vibrate send button pressing
+func _on_vibrate_button_press() -> void:
+	var time = PopupVbr.get_node("Time")
+	var seconds = time.get_text()
+	if seconds.is_valid_integer():
+		var n := int(seconds)
+		if (n > 0):
+			emit_signal("vibrate_by", n)
+			PopupVbr.hide()
+
+# Handles message send button pressing
+func _on_message_button_press() -> void:
+	var msg = PopupMsg.get_node("Msg")
+	var text = msg.get_text()
+	emit_signal("send_msg", text)
+	PopupMsg.hide()
