@@ -5,6 +5,8 @@ signal client_started
 signal input_connected
 signal word_read(word)
 signal hr_read(hr)
+signal auth_ok
+signal auth_error
 
 # VARIABLES
 var receiver : TCP_Server
@@ -106,6 +108,22 @@ func _process(delta):
 			else:
 				acc_delta += delta
 		2:
+			# Wait for MiBand 3 authentication
+			if acc_delta > 1:
+				var code := read_hr_data()
+				if code != -1:
+					if (code == 200):
+						emit_signal("auth_ok")
+					else:
+						emit_signal("auth_error")
+						print("Error code: " + str(code))
+				# Nothing received yet
+				else:
+					pass
+				acc_delta = 0.0
+			else:
+				acc_delta += delta
+		3:
 			# Read HR mode
 			if acc_delta > 1:
 				var hr := read_hr_data()

@@ -2,9 +2,9 @@ extends Node2D
 
 # Variables
 var hrm_manager
+var scan_gui
 var indicator : Node2D
 var device_list : ItemList
-var scan_button : Button
 var select_button : Button
 var conn_status : Label
 var conn_init_text : String 
@@ -25,6 +25,7 @@ func _ready():
 	conn_init_text = conn_status.get_text()
 	conn_status.set_text(conn_init_text + "Waiting for server.")
 	hrm_manager = $HrmManager
+	scan_gui = $Screen/StartMenu/ScanGUI
 	start_menu = $Screen/StartMenu
 	hrm_graph = $Screen/HrmGraph
 	indicator = $Screen/StartMenu/Indicator
@@ -33,47 +34,46 @@ func _ready():
 	indicator.position = conn_pos.position
 	device_list = $Screen/StartMenu/ItemList
 	devices = Array()
-	scan_button = $Screen/StartMenu/ScanButton
 	select_button = $Screen/StartMenu/SelectButton
 	valence_enabled = false
 	hr_received = false
-	$ServerStartUpTimer.start(5)
+	$ServerStartUpTimer.start(8)
 
 # Delays the beginning of the program to allow the HRM Server to start
-func _on_server_startup_timeout(): 
+func _on_server_startup_timeout():
+	print("Attempt connection")
 	hrm_manager.start_connection()
 
 # Enables the scan button and enables the selection display
 func _on_client_ready():
-	scan_button.set_disabled(false)
+	scan_gui.enable()
 	conn_status.set_text(conn_init_text + "Connected.")
 	indicator.position = scan_pos.position
 	indicator.set_visible(false)
 
 # Starts a ble scan
-func _start_scan():
+func _start_scan(secs) -> void:
 	indicator.set_visible(true)
 	indicator.position = scan_pos.position
 	select_button.set_disabled(true)
 	select_button.set_visible(false)
-	scan_button.set_disabled(true)
-	scan_button.set_text("Scanning...")
+	scan_gui.disable()
 	device_list.clear()
 	devices.clear()
-	hrm_manager.start_ble_scan()
-	conn_status.set_text(conn_init_text + "Scanning for 20 seconds.")
+	hrm_manager.start_ble_scan(secs)
+	conn_status.set_text(
+		conn_init_text + "Scanning for " + str(secs) + " seconds.")
 
 # Enable buttons after scan
 func _on_scan_end():
 	conn_status.set_text(conn_init_text + "Connected.")
 	select_button.set_disabled(false)
 	select_button.set_visible(true)
-	scan_button.set_disabled(false)
-	scan_button.set_text("Scan Again")
+	scan_gui.enable()
 	indicator.set_visible(false)
 
 # Handles a new device scanned
-func _on_message_ready(word):
+func _on_message_received(word):
 	var device = word
 	if not devices.has(word):
 		devices.append(device)
@@ -85,6 +85,7 @@ func _on_new_hr(new_hr):
 		hr_received = true
 		conn_status.set_text(conn_init_text + "\nReceiving HR\nmeasurements.")
 		indicator.hide()
+		hrm_manager.message_miband3("Connected")
 	hrm_graph.new_hr(new_hr)
 
 # Handles the selection of a device
@@ -101,8 +102,19 @@ func _select_device():
 		valence_enabled = true
 
 # Handles the ending of authentication
-func _on_auth_end():
-	conn_status.set_text(conn_init_text + "\nWaiting to receive HR.")
+func _on_auth_end(status):
+	if status:
+		conn_status.set_text(conn_init_text + "\nWaiting to receive HR.")
+	else:
+		conn_status.set_text(conn_init_text + "\nAuthentication Failed.")
+
+# Manages the vibrate_by signal
+func _on_vibrate_by(secs) -> void:
+	hrm_manager.vibrate_ms(secs * 1000)
+
+# Manages the send_msg signal
+func _on_send_msg(msg) -> void:
+	hrm_manager.message_miband3(msg)
 
 func _input(event):
 	if valence_enabled:
