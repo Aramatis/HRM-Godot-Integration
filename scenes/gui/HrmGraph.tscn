@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://art/Textures/vibrate-2.png" type="Texture" id=1]
-[ext_resource path="res://HrmGraph.gd" type="Script" id=2]
+[ext_resource path="res://scripts/gui/HrmGraph.gd" type="Script" id=2]
 [ext_resource path="res://art/Textures/vibrate-1.png" type="Texture" id=3]
-[ext_resource path="res://Indicator.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Axis.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/gui/Indicator.tscn" type="PackedScene" id=4]
+[ext_resource path="res://scenes/gui/Axis.tscn" type="PackedScene" id=5]
 [ext_resource path="res://art/Textures/message-1.png" type="Texture" id=6]
 [ext_resource path="res://art/Textures/message-2.png" type="Texture" id=7]
 
